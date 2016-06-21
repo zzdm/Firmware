@@ -109,10 +109,10 @@ static calibrate_return gyro_calibration_worker(int cancel_sub, void* data)
 				orb_check(worker_data->gyro_sensor_sub[s], &changed);
 
 				if (changed) {
-					orb_copy(ORB_ID(sensor_gyro), worker_data->gyro_sensor_sub[s], &gyro_report);
+					orb_copy(ORB_ID(sensor_gyro_raw), worker_data->gyro_sensor_sub[s], &gyro_report);
 
 					if (s == 0) {
-						orb_copy(ORB_ID(sensor_gyro), worker_data->gyro_sensor_sub[s], &worker_data->gyro_report_0);
+						orb_copy(ORB_ID(sensor_gyro_raw), worker_data->gyro_sensor_sub[s], &worker_data->gyro_report_0);
 					}
 
 					worker_data->gyro_scale[s].x_offset += gyro_report.x;
@@ -235,14 +235,14 @@ int do_gyro_calibration(orb_advert_t *mavlink_log_pub)
 	}
 
 	// We should not try to subscribe if the topic doesn't actually exist and can be counted.
-	const unsigned gyro_count = orb_group_count(ORB_ID(sensor_gyro));
+	const unsigned gyro_count = orb_group_count(ORB_ID(sensor_gyro_raw));
 	for (unsigned s = 0; s < gyro_count; s++) {
 
-		worker_data.gyro_sensor_sub[s] = orb_subscribe_multi(ORB_ID(sensor_gyro), s);
+		worker_data.gyro_sensor_sub[s] = orb_subscribe_multi(ORB_ID(sensor_gyro_raw), s);
 #if defined(__PX4_QURT) || defined(__PX4_POSIX_EAGLE)
 		// For QURT respectively the driver framework, we need to get the device ID by copying one report.
 		struct gyro_report gyro_report;
-		orb_copy(ORB_ID(sensor_gyro), worker_data.gyro_sensor_sub[s], &gyro_report);
+		orb_copy(ORB_ID(sensor_gyro_raw), worker_data.gyro_sensor_sub[s], &gyro_report);
 		worker_data.device_id[s] = gyro_report.device_id;
 #endif
 

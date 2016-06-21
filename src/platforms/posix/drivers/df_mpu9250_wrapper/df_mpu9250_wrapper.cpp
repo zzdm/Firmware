@@ -257,11 +257,11 @@ int DfMpu9250Wrapper::start()
 
 	// TODO: don't publish garbage here
 	gyro_report gyro_report = {};
-	_gyro_topic = orb_advertise_multi(ORB_ID(sensor_gyro), &gyro_report,
+	_gyro_topic = orb_advertise_multi(ORB_ID(sensor_gyro_raw), &gyro_report,
 					  &_gyro_orb_class_instance, ORB_PRIO_DEFAULT);
 
 	if (_gyro_topic == nullptr) {
-		PX4_ERR("sensor_gyro advert fail");
+		PX4_ERR("sensor_gyro_raw advert fail");
 		return -1;
 	}
 
@@ -711,7 +711,7 @@ int DfMpu9250Wrapper::_publish(struct imu_sensor_data &data)
 	if (!(m_pub_blocked)) {
 
 		if (_gyro_topic != nullptr) {
-			orb_publish(ORB_ID(sensor_gyro), _gyro_topic, &gyro_report);
+			orb_publish(ORB_ID(sensor_gyro_raw), _gyro_topic, &gyro_report);
 		}
 
 		if (_accel_topic != nullptr) {

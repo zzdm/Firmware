@@ -451,7 +451,7 @@ bool Logger::copy_if_updated_multi(LoggerSubscription &sub, int multi_instance, 
 
 void Logger::add_default_topics()
 {
-	add_topic("sensor_gyro", 0);
+	add_topic("sensor_gyro_raw", 0);
 	add_topic("sensor_accel_raw", 0);
 	add_topic("vehicle_rates_setpoint", 10);
 	add_topic("vehicle_attitude_setpoint", 10);

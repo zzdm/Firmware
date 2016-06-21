@@ -289,7 +289,7 @@ static calibrate_return mag_calibration_worker(detect_orientation_return orienta
 
 	const float gyro_int_thresh_rad = 0.5f;
 
-	int sub_gyro = orb_subscribe(ORB_ID(sensor_gyro));
+	int sub_gyro = orb_subscribe(ORB_ID(sensor_gyro_raw));
 
 	while (fabsf(gyro_x_integral) < gyro_int_thresh_rad &&
 		fabsf(gyro_y_integral) < gyro_int_thresh_rad &&
@@ -320,7 +320,7 @@ static calibrate_return mag_calibration_worker(detect_orientation_return orienta
 
 		if (poll_ret > 0) {
 			struct gyro_report gyro;
-			orb_copy(ORB_ID(sensor_gyro), sub_gyro, &gyro);
+			orb_copy(ORB_ID(sensor_gyro_raw), sub_gyro, &gyro);
 
 			/* ensure we have a valid first timestamp */
 			if (last_gyro > 0) {

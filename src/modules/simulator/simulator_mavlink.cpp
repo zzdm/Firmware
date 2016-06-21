@@ -789,7 +789,7 @@ int Simulator::publish_sensor_topics(mavlink_hil_sensor_t *imu)
 		gyro.temperature = imu->temperature;
 
 		int gyro_multi;
-		orb_publish_auto(ORB_ID(sensor_gyro), &_gyro_pub, &gyro, &gyro_multi, ORB_PRIO_HIGH);
+		orb_publish_auto(ORB_ID(sensor_gyro_raw), &_gyro_pub, &gyro, &gyro_multi, ORB_PRIO_HIGH);
 	}
 
 	/* accelerometer */

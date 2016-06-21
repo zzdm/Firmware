@@ -192,8 +192,8 @@ int matlab_csv_serial_thread_main(int argc, char *argv[])
 	/* subscribe to parameter changes */
 	int accel0_sub = orb_subscribe_multi(ORB_ID(sensor_accel_raw), 0);
 	int accel1_sub = orb_subscribe_multi(ORB_ID(sensor_accel_raw), 1);
-	int gyro0_sub = orb_subscribe_multi(ORB_ID(sensor_gyro), 0);
-	int gyro1_sub = orb_subscribe_multi(ORB_ID(sensor_gyro), 1);
+	int gyro0_sub = orb_subscribe_multi(ORB_ID(sensor_gyro_raw), 0);
+	int gyro1_sub = orb_subscribe_multi(ORB_ID(sensor_gyro_raw), 1);
 
 	thread_running = true;
 
@@ -220,8 +220,8 @@ int matlab_csv_serial_thread_main(int argc, char *argv[])
 			if (fds[0].revents & POLLIN) {
 				orb_copy(ORB_ID(sensor_accel_raw), accel0_sub, &accel0);
 				orb_copy(ORB_ID(sensor_accel_raw), accel1_sub, &accel1);
-				orb_copy(ORB_ID(sensor_gyro), gyro0_sub, &gyro0);
-				orb_copy(ORB_ID(sensor_gyro), gyro1_sub, &gyro1);
+				orb_copy(ORB_ID(sensor_gyro_raw), gyro0_sub, &gyro0);
+				orb_copy(ORB_ID(sensor_gyro_raw), gyro1_sub, &gyro1);
 
 				// write out on accel 0, but collect for all other sensors as they have updates
 				dprintf(serial_fd, "%llu,%d,%d,%d,%d,%d,%d\n", accel0.timestamp, (int)accel0.x_raw, (int)accel0.y_raw,

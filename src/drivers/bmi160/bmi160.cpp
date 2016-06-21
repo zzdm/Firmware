@@ -201,7 +201,7 @@ BMI160::init()
 	struct gyro_report grp;
 	_gyro_reports->get(&grp);
 
-	_gyro->_gyro_topic = orb_advertise_multi(ORB_ID(sensor_gyro), &grp,
+	_gyro->_gyro_topic = orb_advertise_multi(ORB_ID(sensor_gyro_raw), &grp,
 			     &_gyro->_gyro_orb_class_instance, (is_external()) ? ORB_PRIO_MAX - 1 : ORB_PRIO_HIGH - 1);
 
 	if (_gyro->_gyro_topic == nullptr) {
@@ -1353,7 +1353,7 @@ BMI160::measure()
 
 	if (gyro_notify && !(_pub_blocked)) {
 		/* publish it */
-		orb_publish(ORB_ID(sensor_gyro), _gyro->_gyro_topic, &grb);
+		orb_publish(ORB_ID(sensor_gyro_raw), _gyro->_gyro_topic, &grb);
 	}
 
 	/* stop measuring */

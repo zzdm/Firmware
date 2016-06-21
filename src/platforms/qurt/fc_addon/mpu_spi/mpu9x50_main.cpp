@@ -371,11 +371,11 @@ bool create_pubs()
 	memset(&_accel, 0, sizeof(struct accel_report));
 	memset(&_mag, 0, sizeof(struct mag_report));
 
-	_gyro_pub = orb_advertise_multi(ORB_ID(sensor_gyro), &_gyro,
+	_gyro_pub = orb_advertise_multi(ORB_ID(sensor_gyro_raw), &_gyro,
 					&_gyro_orb_class_instance, ORB_PRIO_HIGH - 1);
 
 	if (_gyro_pub == nullptr) {
-		PX4_ERR("sensor_gyro advert fail");
+		PX4_ERR("sensor_gyro_raw advert fail");
 		return false;
 	}
 
@@ -440,7 +440,7 @@ void update_reports()
 
 void publish_reports()
 {
-	if (orb_publish(ORB_ID(sensor_gyro), _gyro_pub, &_gyro) != OK) {
+	if (orb_publish(ORB_ID(sensor_gyro_raw), _gyro_pub, &_gyro) != OK) {
 		PX4_WARN("failed to publish gyro report");
 
 	} else {

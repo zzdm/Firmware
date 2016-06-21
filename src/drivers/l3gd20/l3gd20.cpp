@@ -500,11 +500,11 @@ L3GD20::init()
 	struct gyro_report grp;
 	_reports->get(&grp);
 
-	_gyro_topic = orb_advertise_multi(ORB_ID(sensor_gyro), &grp,
+	_gyro_topic = orb_advertise_multi(ORB_ID(sensor_gyro_raw), &grp,
 					  &_orb_class_instance, (is_external()) ? ORB_PRIO_VERY_HIGH : ORB_PRIO_DEFAULT);
 
 	if (_gyro_topic == nullptr) {
-		DEVICE_DEBUG("failed to create sensor_gyro publication");
+		DEVICE_DEBUG("failed to create sensor_gyro_raw publication");
 	}
 
 	ret = OK;
@@ -1101,7 +1101,7 @@ L3GD20::measure()
 		/* publish for subscribers */
 		if (!(_pub_blocked)) {
 			/* publish it */
-			orb_publish(ORB_ID(sensor_gyro), _gyro_topic, &report);
+			orb_publish(ORB_ID(sensor_gyro_raw), _gyro_topic, &report);
 		}
 	}
 

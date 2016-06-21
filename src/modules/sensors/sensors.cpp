@@ -1052,7 +1052,7 @@ Sensors::gyro_poll(struct sensor_combined_s &raw)
 		if (gyro_updated) {
 			struct gyro_report	gyro_report;
 
-			orb_copy(ORB_ID(sensor_gyro), _gyro_sub[i], &gyro_report);
+			orb_copy(ORB_ID(sensor_gyro_raw), _gyro_sub[i], &gyro_report);
 
 			math::Vector<3> vect(gyro_report.x, gyro_report.y, gyro_report.z);
 			vect = _board_rotation * vect;
@@ -2103,7 +2103,7 @@ Sensors::task_main()
 
 	unsigned bcount_prev = _baro_count;
 
-	_gyro_count = init_sensor_class(ORB_ID(sensor_gyro), _gyro_sub, raw.gyro_priority, raw.gyro_errcount);
+	_gyro_count = init_sensor_class(ORB_ID(sensor_gyro_raw), _gyro_sub, raw.gyro_priority, raw.gyro_errcount);
 
 	_mag_count = init_sensor_class(ORB_ID(sensor_mag), _mag_sub, raw.magnetometer_priority, raw.magnetometer_errcount);
 
@@ -2175,7 +2175,7 @@ Sensors::task_main()
 			 * then attempt to subscribe once again
 			 */
 			if (_gyro_count == 0) {
-				_gyro_count = init_sensor_class(ORB_ID(sensor_gyro), _gyro_sub,
+				_gyro_count = init_sensor_class(ORB_ID(sensor_gyro_raw), _gyro_sub,
 								raw.gyro_priority, raw.gyro_errcount);
 				fds[0].fd = _gyro_sub[0];
 			}
@@ -2232,7 +2232,7 @@ Sensors::task_main()
 		 * when not adding sensors poll for param updates
 		 */
 		if (!_armed && hrt_elapsed_time(&_last_config_update) > 500 * 1000) {
-			_gyro_count = init_sensor_class(ORB_ID(sensor_gyro), _gyro_sub,
+			_gyro_count = init_sensor_class(ORB_ID(sensor_gyro_raw), _gyro_sub,
 							raw.gyro_priority, raw.gyro_errcount);
 
 			_mag_count = init_sensor_class(ORB_ID(sensor_mag), _mag_sub,

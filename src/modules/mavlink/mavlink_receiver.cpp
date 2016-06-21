@@ -1603,10 +1603,10 @@ MavlinkReceiver::handle_message_hil_sensor(mavlink_message_t *msg)
 		gyro.temperature = imu.temperature;
 
 		if (_gyro_pub == nullptr) {
-			_gyro_pub = orb_advertise(ORB_ID(sensor_gyro), &gyro);
+			_gyro_pub = orb_advertise(ORB_ID(sensor_gyro_raw), &gyro);
 
 		} else {
-			orb_publish(ORB_ID(sensor_gyro), _gyro_pub, &gyro);
+			orb_publish(ORB_ID(sensor_gyro_raw), _gyro_pub, &gyro);
 		}
 	}
 
