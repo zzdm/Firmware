@@ -82,7 +82,7 @@ public:
 
 /**
  * This is the base class for redundant sensors with an independent ORB topic per each redundancy channel.
- * For example, sensor_mag0, sensor_mag1, etc.
+ * For example, sensor_mag_raw0, sensor_mag_raw1, etc.
  */
 class UavcanCDevSensorBridgeBase : public IUavcanSensorBridge, public device::CDev
 {

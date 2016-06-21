@@ -1096,7 +1096,7 @@ Sensors::mag_poll(struct sensor_combined_s &raw)
 		if (mag_updated) {
 			struct mag_report	mag_report;
 
-			orb_copy(ORB_ID(sensor_mag), _mag_sub[i], &mag_report);
+			orb_copy(ORB_ID(sensor_mag_raw), _mag_sub[i], &mag_report);
 
 			math::Vector<3> vect(mag_report.x, mag_report.y, mag_report.z);
 
@@ -2105,7 +2105,7 @@ Sensors::task_main()
 
 	_gyro_count = init_sensor_class(ORB_ID(sensor_gyro_raw), _gyro_sub, raw.gyro_priority, raw.gyro_errcount);
 
-	_mag_count = init_sensor_class(ORB_ID(sensor_mag), _mag_sub, raw.magnetometer_priority, raw.magnetometer_errcount);
+	_mag_count = init_sensor_class(ORB_ID(sensor_mag_raw), _mag_sub, raw.magnetometer_priority, raw.magnetometer_errcount);
 
 	_accel_count = init_sensor_class(ORB_ID(sensor_accel_raw), _accel_sub, raw.accelerometer_priority,
 					 raw.accelerometer_errcount);
@@ -2235,7 +2235,7 @@ Sensors::task_main()
 			_gyro_count = init_sensor_class(ORB_ID(sensor_gyro_raw), _gyro_sub,
 							raw.gyro_priority, raw.gyro_errcount);
 
-			_mag_count = init_sensor_class(ORB_ID(sensor_mag), _mag_sub,
+			_mag_count = init_sensor_class(ORB_ID(sensor_mag_raw), _mag_sub,
 						       raw.magnetometer_priority, raw.magnetometer_errcount);
 
 			_accel_count = init_sensor_class(ORB_ID(sensor_accel_raw), _accel_sub,

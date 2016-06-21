@@ -1645,10 +1645,10 @@ MavlinkReceiver::handle_message_hil_sensor(mavlink_message_t *msg)
 
 		if (_mag_pub == nullptr) {
 			/* publish to the first mag topic */
-			_mag_pub = orb_advertise(ORB_ID(sensor_mag), &mag);
+			_mag_pub = orb_advertise(ORB_ID(sensor_mag_raw), &mag);
 
 		} else {
-			orb_publish(ORB_ID(sensor_mag), _mag_pub, &mag);
+			orb_publish(ORB_ID(sensor_mag_raw), _mag_pub, &mag);
 		}
 	}
 

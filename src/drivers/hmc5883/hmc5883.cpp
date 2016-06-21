@@ -1019,10 +1019,10 @@ HMC5883::collect()
 
 		if (_mag_topic != nullptr) {
 			/* publish it */
-			orb_publish(ORB_ID(sensor_mag), _mag_topic, &new_report);
+			orb_publish(ORB_ID(sensor_mag_raw), _mag_topic, &new_report);
 
 		} else {
-			_mag_topic = orb_advertise_multi(ORB_ID(sensor_mag), &new_report,
+			_mag_topic = orb_advertise_multi(ORB_ID(sensor_mag_raw), &new_report,
 							 &_orb_class_instance, (sensor_is_onboard) ? ORB_PRIO_HIGH : ORB_PRIO_MAX);
 
 			if (_mag_topic == nullptr) {

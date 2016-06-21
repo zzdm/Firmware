@@ -357,7 +357,7 @@ ACCELSIM::init()
 	_mag_reports->get(&mrp);
 
 	/* measurement will have generated a report, publish */
-	_mag->_mag_topic = orb_advertise_multi(ORB_ID(sensor_mag), &mrp,
+	_mag->_mag_topic = orb_advertise_multi(ORB_ID(sensor_mag_raw), &mrp,
 					       &_mag->_mag_orb_class_instance, ORB_PRIO_LOW);
 
 	if (_mag->_mag_topic == nullptr) {
@@ -975,7 +975,7 @@ ACCELSIM::mag_measure()
 
 	if (!(m_pub_blocked)) {
 		/* publish it */
-		orb_publish(ORB_ID(sensor_mag), _mag->_mag_topic, &mag_report);
+		orb_publish(ORB_ID(sensor_mag_raw), _mag->_mag_topic, &mag_report);
 	}
 
 	_mag_read++;

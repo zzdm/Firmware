@@ -387,11 +387,11 @@ bool create_pubs()
 		return false;
 	}
 
-	_mag_pub = orb_advertise_multi(ORB_ID(sensor_mag), &_mag,
+	_mag_pub = orb_advertise_multi(ORB_ID(sensor_mag_raw), &_mag,
 				       &_mag_orb_class_instance, ORB_PRIO_HIGH - 1);
 
 	if (_mag_pub == nullptr) {
-		PX4_ERR("sensor_mag advert fail");
+		PX4_ERR("sensor_mag_raw advert fail");
 		return false;
 	}
 
@@ -457,7 +457,7 @@ void publish_reports()
 	}
 
 	if (_data.mag_data_ready) {
-		if (orb_publish(ORB_ID(sensor_mag), _mag_pub, &_mag) != OK) {
+		if (orb_publish(ORB_ID(sensor_mag_raw), _mag_pub, &_mag) != OK) {
 			PX4_WARN("failed to publish mag report");
 
 		} else {

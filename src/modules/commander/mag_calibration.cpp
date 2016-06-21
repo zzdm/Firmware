@@ -376,7 +376,7 @@ static calibrate_return mag_calibration_worker(detect_orientation_return orienta
 				if (worker_data->sub_mag[cur_mag] >= 0) {
 					struct mag_report mag;
 
-					orb_copy(ORB_ID(sensor_mag), worker_data->sub_mag[cur_mag], &mag);
+					orb_copy(ORB_ID(sensor_mag_raw), worker_data->sub_mag[cur_mag], &mag);
 
 					// Check if this measurement is good to go in
 					rejected = rejected || reject_sample(mag.x, mag.y, mag.z,
@@ -502,16 +502,16 @@ calibrate_return mag_calibrate_all(orb_advert_t *mavlink_log_pub)
 	if (result == calibrate_return_ok) {
 
 		// We should not try to subscribe if the topic doesn't actually exist and can be counted.
-		const unsigned mag_count = orb_group_count(ORB_ID(sensor_mag));
+		const unsigned mag_count = orb_group_count(ORB_ID(sensor_mag_raw));
 
 		for (unsigned cur_mag = 0; cur_mag < mag_count; cur_mag++) {
 			// Mag in this slot is available
-			worker_data.sub_mag[cur_mag] = orb_subscribe_multi(ORB_ID(sensor_mag), cur_mag);
+			worker_data.sub_mag[cur_mag] = orb_subscribe_multi(ORB_ID(sensor_mag_raw), cur_mag);
 
 #ifdef __PX4_QURT
 			// For QURT respectively the driver framework, we need to get the device ID by copying one report.
 			struct mag_report	mag_report;
-			orb_copy(ORB_ID(sensor_mag), worker_data.sub_mag[cur_mag], &mag_report);
+			orb_copy(ORB_ID(sensor_mag_raw), worker_data.sub_mag[cur_mag], &mag_report);
 			device_ids[cur_mag] = mag_report.device_id;
 #endif
 			if (worker_data.sub_mag[cur_mag] < 0) {

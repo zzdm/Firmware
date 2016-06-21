@@ -224,7 +224,7 @@ MPU9250_mag::init()
 	struct mag_report mrp;
 	_mag_reports->get(&mrp);
 
-	_mag_topic = orb_advertise_multi(ORB_ID(sensor_mag), &mrp,
+	_mag_topic = orb_advertise_multi(ORB_ID(sensor_mag_raw), &mrp,
 					 &_mag_orb_class_instance, ORB_PRIO_LOW);
 //			   &_mag_orb_class_instance, (is_external()) ? ORB_PRIO_MAX - 1 : ORB_PRIO_HIGH - 1);
 
@@ -307,7 +307,7 @@ MPU9250_mag::measure(struct ak8963_regs data)
 
 	if (mag_notify && !(_pub_blocked)) {
 		/* publish it */
-		orb_publish(ORB_ID(sensor_mag), _mag_topic, &mrb);
+		orb_publish(ORB_ID(sensor_mag_raw), _mag_topic, &mrb);
 	}
 }
 

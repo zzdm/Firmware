@@ -304,11 +304,11 @@ int DfHmc9250Wrapper::_publish(struct mag_sensor_data &data)
 	if (!(m_pub_blocked)) {
 
 		if (_mag_topic == nullptr) {
-			_mag_topic = orb_advertise_multi(ORB_ID(sensor_mag), &mag_report,
+			_mag_topic = orb_advertise_multi(ORB_ID(sensor_mag_raw), &mag_report,
 							 &_mag_orb_class_instance, ORB_PRIO_HIGH);
 
 		} else {
-			orb_publish(ORB_ID(sensor_mag), _mag_topic, &mag_report);
+			orb_publish(ORB_ID(sensor_mag_raw), _mag_topic, &mag_report);
 		}
 
 	}

@@ -89,7 +89,7 @@ set(msg_file_names
 	sensor_baro.msg
 	sensor_combined.msg
 	sensor_gyro_raw.msg
-	sensor_mag.msg
+	sensor_mag_raw.msg
 	servorail_status.msg
 	subsystem_info.msg
 	system_power.msg

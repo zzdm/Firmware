@@ -721,11 +721,11 @@ int DfMpu9250Wrapper::_publish(struct imu_sensor_data &data)
 		if (_mag_enabled) {
 
 			if (_mag_topic == nullptr) {
-				_mag_topic = orb_advertise_multi(ORB_ID(sensor_mag), &mag_report,
+				_mag_topic = orb_advertise_multi(ORB_ID(sensor_mag_raw), &mag_report,
 								 &_mag_orb_class_instance, ORB_PRIO_LOW);
 
 			} else {
-				orb_publish(ORB_ID(sensor_mag), _mag_topic, &mag_report);
+				orb_publish(ORB_ID(sensor_mag_raw), _mag_topic, &mag_report);
 			}
 		}
 

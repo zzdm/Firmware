@@ -825,7 +825,7 @@ int Simulator::publish_sensor_topics(mavlink_hil_sensor_t *imu)
 		mag.temperature = imu->temperature;
 
 		int mag_multi;
-		orb_publish_auto(ORB_ID(sensor_mag), &_mag_pub, &mag, &mag_multi, ORB_PRIO_HIGH);
+		orb_publish_auto(ORB_ID(sensor_mag_raw), &_mag_pub, &mag, &mag_multi, ORB_PRIO_HIGH);
 	}
 
 	/* baro */
