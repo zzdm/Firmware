@@ -411,9 +411,9 @@ calibrate_return do_accel_calibration_measurements(orb_advert_t *mavlink_log_pub
 	uint64_t timestamps[max_accel_sens];
 
 	// We should not try to subscribe if the topic doesn't actually exist and can be counted.
-	const unsigned accel_count = orb_group_count(ORB_ID(sensor_accel));
+	const unsigned accel_count = orb_group_count(ORB_ID(sensor_accel_raw));
 	for (unsigned i = 0; i < accel_count; i++) {
-		worker_data.subs[i] = orb_subscribe_multi(ORB_ID(sensor_accel), i);
+		worker_data.subs[i] = orb_subscribe_multi(ORB_ID(sensor_accel_raw), i);
 		if (worker_data.subs[i] < 0) {
 			result = calibrate_return_error;
 			break;
@@ -422,12 +422,12 @@ calibrate_return do_accel_calibration_measurements(orb_advert_t *mavlink_log_pub
 #if defined(__PX4_QURT) || defined(__PX4_POSIX_EAGLE)
 		// For QURT respectively the driver framework, we need to get the device ID by copying one report.
 		struct accel_report	accel_report;
-		orb_copy(ORB_ID(sensor_accel), worker_data.subs[i], &accel_report);
+		orb_copy(ORB_ID(sensor_accel_raw), worker_data.subs[i], &accel_report);
 		device_id[i] = accel_report.device_id;
 #endif
 		/* store initial timestamp - used to infer which sensors are active */
 		struct accel_report arp = {};
-		(void)orb_copy(ORB_ID(sensor_accel), worker_data.subs[i], &arp);
+		(void)orb_copy(ORB_ID(sensor_accel_raw), worker_data.subs[i], &arp);
 		timestamps[i] = arp.timestamp;
 
 		if (device_id[i] != 0) {
@@ -457,7 +457,7 @@ calibrate_return do_accel_calibration_measurements(orb_advert_t *mavlink_log_pub
 		if (worker_data.subs[i] >= 0) {
 			/* figure out which sensors were active */
 			struct accel_report arp = {};
-			(void)orb_copy(ORB_ID(sensor_accel), worker_data.subs[i], &arp);
+			(void)orb_copy(ORB_ID(sensor_accel_raw), worker_data.subs[i], &arp);
 			if (arp.timestamp != 0 && timestamps[i] != arp.timestamp) {
 				(*active_sensors)++;
 			}
@@ -536,7 +536,7 @@ calibrate_return read_accelerometer_avg(int (&subs)[max_accel_sens], float (&acc
 				if (changed) {
 
 					struct accel_report arp;
-					orb_copy(ORB_ID(sensor_accel), subs[s], &arp);
+					orb_copy(ORB_ID(sensor_accel_raw), subs[s], &arp);
 
 					accel_sum[s][0] += arp.x;
 					accel_sum[s][1] += arp.y;

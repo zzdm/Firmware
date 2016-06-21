@@ -406,7 +406,7 @@ MPU9250::init()
 	_accel_reports->get(&arp);
 
 	/* measurement will have generated a report, publish */
-	_accel_topic = orb_advertise_multi(ORB_ID(sensor_accel), &arp,
+	_accel_topic = orb_advertise_multi(ORB_ID(sensor_accel_raw), &arp,
 					   &_accel_orb_class_instance, (is_external()) ? ORB_PRIO_MAX - 1 : ORB_PRIO_HIGH - 1);
 
 	if (_accel_topic == nullptr) {
@@ -1480,7 +1480,7 @@ MPU9250::measure()
 		/* log the time of this report */
 		perf_begin(_controller_latency_perf);
 		/* publish it */
-		orb_publish(ORB_ID(sensor_accel), _accel_topic, &arb);
+		orb_publish(ORB_ID(sensor_accel_raw), _accel_topic, &arb);
 	}
 
 	if (gyro_notify && !(_pub_blocked)) {

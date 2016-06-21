@@ -610,7 +610,7 @@ FixedwingAttitudeControl::vehicle_accel_poll()
 	orb_check(_accel_sub, &accel_updated);
 
 	if (accel_updated) {
-		orb_copy(ORB_ID(sensor_accel), _accel_sub, &_accel);
+		orb_copy(ORB_ID(sensor_accel_raw), _accel_sub, &_accel);
 	}
 }
 
@@ -691,7 +691,7 @@ FixedwingAttitudeControl::task_main()
 	 */
 	_att_sp_sub = orb_subscribe(ORB_ID(vehicle_attitude_setpoint));
 	_ctrl_state_sub = orb_subscribe(ORB_ID(control_state));
-	_accel_sub = orb_subscribe_multi(ORB_ID(sensor_accel), 0);
+	_accel_sub = orb_subscribe_multi(ORB_ID(sensor_accel_raw), 0);
 	_vcontrol_mode_sub = orb_subscribe(ORB_ID(vehicle_control_mode));
 	_params_sub = orb_subscribe(ORB_ID(parameter_update));
 	_manual_sub = orb_subscribe(ORB_ID(manual_control_setpoint));

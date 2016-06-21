@@ -379,11 +379,11 @@ bool create_pubs()
 		return false;
 	}
 
-	_accel_pub = orb_advertise_multi(ORB_ID(sensor_accel), &_accel,
+	_accel_pub = orb_advertise_multi(ORB_ID(sensor_accel_raw), &_accel,
 					 &_accel_orb_class_instance, ORB_PRIO_HIGH - 1);
 
 	if (_accel_pub == nullptr) {
-		PX4_ERR("sensor_accel advert fail");
+		PX4_ERR("sensor_accel_raw advert fail");
 		return false;
 	}
 
@@ -448,7 +448,7 @@ void publish_reports()
 		//PX4_DEBUG("MPU_GYRO: %f %f %f", _gyro.x, _gyro.y, _gyro.z)
 	}
 
-	if (orb_publish(ORB_ID(sensor_accel), _accel_pub, &_accel) != OK) {
+	if (orb_publish(ORB_ID(sensor_accel_raw), _accel_pub, &_accel) != OK) {
 		PX4_WARN("failed to publish accel report");
 
 	} else {

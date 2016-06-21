@@ -368,7 +368,7 @@ ACCELSIM::init()
 	_accel_reports->get(&arp);
 
 	/* measurement will have generated a report, publish */
-	_accel_topic = orb_advertise_multi(ORB_ID(sensor_accel), &arp,
+	_accel_topic = orb_advertise_multi(ORB_ID(sensor_accel_raw), &arp,
 					   &_accel_orb_class_instance, ORB_PRIO_DEFAULT);
 
 	if (_accel_topic == nullptr) {
@@ -890,7 +890,7 @@ ACCELSIM::_measure()
 		// The first call to measure() is from init() and _accel_topic is not
 		// yet initialized
 		if (_accel_topic != nullptr) {
-			orb_publish(ORB_ID(sensor_accel), _accel_topic, &accel_report);
+			orb_publish(ORB_ID(sensor_accel_raw), _accel_topic, &accel_report);
 		}
 	}
 

@@ -1624,10 +1624,10 @@ MavlinkReceiver::handle_message_hil_sensor(mavlink_message_t *msg)
 		accel.temperature = imu.temperature;
 
 		if (_accel_pub == nullptr) {
-			_accel_pub = orb_advertise(ORB_ID(sensor_accel), &accel);
+			_accel_pub = orb_advertise(ORB_ID(sensor_accel_raw), &accel);
 
 		} else {
-			orb_publish(ORB_ID(sensor_accel), _accel_pub, &accel);
+			orb_publish(ORB_ID(sensor_accel_raw), _accel_pub, &accel);
 		}
 	}
 
@@ -2037,10 +2037,10 @@ MavlinkReceiver::handle_message_hil_state_quaternion(mavlink_message_t *msg)
 		accel.temperature = 25.0f;
 
 		if (_accel_pub == nullptr) {
-			_accel_pub = orb_advertise(ORB_ID(sensor_accel), &accel);
+			_accel_pub = orb_advertise(ORB_ID(sensor_accel_raw), &accel);
 
 		} else {
-			orb_publish(ORB_ID(sensor_accel), _accel_pub, &accel);
+			orb_publish(ORB_ID(sensor_accel_raw), _accel_pub, &accel);
 		}
 	}
 

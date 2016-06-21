@@ -247,11 +247,11 @@ int DfMpu9250Wrapper::start()
 {
 	// TODO: don't publish garbage here
 	accel_report accel_report = {};
-	_accel_topic = orb_advertise_multi(ORB_ID(sensor_accel), &accel_report,
+	_accel_topic = orb_advertise_multi(ORB_ID(sensor_accel_raw), &accel_report,
 					   &_accel_orb_class_instance, ORB_PRIO_DEFAULT);
 
 	if (_accel_topic == nullptr) {
-		PX4_ERR("sensor_accel advert fail");
+		PX4_ERR("sensor_accel_raw advert fail");
 		return -1;
 	}
 
@@ -715,7 +715,7 @@ int DfMpu9250Wrapper::_publish(struct imu_sensor_data &data)
 		}
 
 		if (_accel_topic != nullptr) {
-			orb_publish(ORB_ID(sensor_accel), _accel_topic, &accel_report);
+			orb_publish(ORB_ID(sensor_accel_raw), _accel_topic, &accel_report);
 		}
 
 		if (_mag_enabled) {

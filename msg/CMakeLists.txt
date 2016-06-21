@@ -85,7 +85,7 @@ set(msg_file_names
 	rc_parameter_map.msg
 	safety.msg
 	satellite_info.msg
-	sensor_accel.msg
+	sensor_accel_raw.msg
 	sensor_baro.msg
 	sensor_combined.msg
 	sensor_gyro.msg

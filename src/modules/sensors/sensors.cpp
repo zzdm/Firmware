@@ -1013,7 +1013,7 @@ Sensors::accel_poll(struct sensor_combined_s &raw)
 		if (accel_updated) {
 			struct accel_report	accel_report;
 
-			orb_copy(ORB_ID(sensor_accel), _accel_sub[i], &accel_report);
+			orb_copy(ORB_ID(sensor_accel_raw), _accel_sub[i], &accel_report);
 
 			math::Vector<3> vect(accel_report.x, accel_report.y, accel_report.z);
 			vect = _board_rotation * vect;
@@ -2107,7 +2107,7 @@ Sensors::task_main()
 
 	_mag_count = init_sensor_class(ORB_ID(sensor_mag), _mag_sub, raw.magnetometer_priority, raw.magnetometer_errcount);
 
-	_accel_count = init_sensor_class(ORB_ID(sensor_accel), _accel_sub, raw.accelerometer_priority,
+	_accel_count = init_sensor_class(ORB_ID(sensor_accel_raw), _accel_sub, raw.accelerometer_priority,
 					 raw.accelerometer_errcount);
 
 	_baro_count = init_sensor_class(ORB_ID(sensor_baro), _baro_sub, raw.baro_priority, raw.baro_errcount);
@@ -2238,7 +2238,7 @@ Sensors::task_main()
 			_mag_count = init_sensor_class(ORB_ID(sensor_mag), _mag_sub,
 						       raw.magnetometer_priority, raw.magnetometer_errcount);
 
-			_accel_count = init_sensor_class(ORB_ID(sensor_accel), _accel_sub,
+			_accel_count = init_sensor_class(ORB_ID(sensor_accel_raw), _accel_sub,
 							 raw.accelerometer_priority, raw.accelerometer_errcount);
 
 			_baro_count = init_sensor_class(ORB_ID(sensor_baro), _baro_sub,

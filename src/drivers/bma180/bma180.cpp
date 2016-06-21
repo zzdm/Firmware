@@ -334,7 +334,7 @@ BMA180::init()
 		_reports->get(&arp);
 
 		/* measurement will have generated a report, publish */
-		_accel_topic = orb_advertise(ORB_ID(sensor_accel), &arp);
+		_accel_topic = orb_advertise(ORB_ID(sensor_accel_raw), &arp);
 	}
 
 out:
@@ -750,7 +750,7 @@ BMA180::measure()
 
 	/* publish for subscribers */
 	if (_accel_topic != nullptr && !(_pub_blocked)) {
-		orb_publish(ORB_ID(sensor_accel), _accel_topic, &report);
+		orb_publish(ORB_ID(sensor_accel_raw), _accel_topic, &report);
 	}
 
 	/* stop the perf counter */

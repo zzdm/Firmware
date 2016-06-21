@@ -463,7 +463,7 @@ GYROSIM::init()
 	_accel_reports->get(&arp);
 
 	/* measurement will have generated a report, publish */
-	_accel_topic = orb_advertise_multi(ORB_ID(sensor_accel), &arp,
+	_accel_topic = orb_advertise_multi(ORB_ID(sensor_accel_raw), &arp,
 					   &_accel_orb_class_instance, ORB_PRIO_HIGH);
 
 	if (_accel_topic == nullptr) {
@@ -1143,7 +1143,7 @@ GYROSIM::_measure()
 			/* log the time of this report */
 			perf_begin(_controller_latency_perf);
 			/* publish it */
-			orb_publish(ORB_ID(sensor_accel), _accel_topic, &arb);
+			orb_publish(ORB_ID(sensor_accel_raw), _accel_topic, &arb);
 		}
 	}
 

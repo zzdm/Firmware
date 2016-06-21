@@ -807,7 +807,7 @@ int Simulator::publish_sensor_topics(mavlink_hil_sensor_t *imu)
 		accel.temperature = imu->temperature;
 
 		int accel_multi;
-		orb_publish_auto(ORB_ID(sensor_accel), &_accel_pub, &accel, &accel_multi, ORB_PRIO_HIGH);
+		orb_publish_auto(ORB_ID(sensor_accel_raw), &_accel_pub, &accel, &accel_multi, ORB_PRIO_HIGH);
 	}
 
 	/* magnetometer */

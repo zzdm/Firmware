@@ -190,8 +190,8 @@ int matlab_csv_serial_thread_main(int argc, char *argv[])
 	struct gyro_report gyro1;
 
 	/* subscribe to parameter changes */
-	int accel0_sub = orb_subscribe_multi(ORB_ID(sensor_accel), 0);
-	int accel1_sub = orb_subscribe_multi(ORB_ID(sensor_accel), 1);
+	int accel0_sub = orb_subscribe_multi(ORB_ID(sensor_accel_raw), 0);
+	int accel1_sub = orb_subscribe_multi(ORB_ID(sensor_accel_raw), 1);
 	int gyro0_sub = orb_subscribe_multi(ORB_ID(sensor_gyro), 0);
 	int gyro1_sub = orb_subscribe_multi(ORB_ID(sensor_gyro), 1);
 
@@ -218,8 +218,8 @@ int matlab_csv_serial_thread_main(int argc, char *argv[])
 
 			/* accel0 update available? */
 			if (fds[0].revents & POLLIN) {
-				orb_copy(ORB_ID(sensor_accel), accel0_sub, &accel0);
-				orb_copy(ORB_ID(sensor_accel), accel1_sub, &accel1);
+				orb_copy(ORB_ID(sensor_accel_raw), accel0_sub, &accel0);
+				orb_copy(ORB_ID(sensor_accel_raw), accel1_sub, &accel1);
 				orb_copy(ORB_ID(sensor_gyro), gyro0_sub, &gyro0);
 				orb_copy(ORB_ID(sensor_gyro), gyro1_sub, &gyro1);
 
