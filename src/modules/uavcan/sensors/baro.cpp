@@ -41,7 +41,7 @@
 const char *const UavcanBarometerBridge::NAME = "baro";
 
 UavcanBarometerBridge::UavcanBarometerBridge(uavcan::INode &node) :
-	UavcanCDevSensorBridgeBase("uavcan_baro", "/dev/uavcan/baro", BARO_BASE_DEVICE_PATH, ORB_ID(sensor_baro)),
+	UavcanCDevSensorBridgeBase("uavcan_baro", "/dev/uavcan/baro", BARO_BASE_DEVICE_PATH, ORB_ID(sensor_baro_raw)),
 	_sub_air_pressure_data(node),
 	_sub_air_temperature_data(node),
 	_reports(2, sizeof(baro_report))

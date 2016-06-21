@@ -1662,10 +1662,10 @@ MavlinkReceiver::handle_message_hil_sensor(mavlink_message_t *msg)
 		baro.temperature = imu.temperature;
 
 		if (_baro_pub == nullptr) {
-			_baro_pub = orb_advertise(ORB_ID(sensor_baro), &baro);
+			_baro_pub = orb_advertise(ORB_ID(sensor_baro_raw), &baro);
 
 		} else {
-			orb_publish(ORB_ID(sensor_baro), _baro_pub, &baro);
+			orb_publish(ORB_ID(sensor_baro_raw), _baro_pub, &baro);
 		}
 	}
 

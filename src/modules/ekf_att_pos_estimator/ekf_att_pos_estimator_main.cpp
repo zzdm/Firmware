@@ -446,7 +446,7 @@ int AttitudePositionEstimatorEKF::check_filter_state()
 		float gps_alt = _gps.alt / 1e3f;
 
 		// Set up height correctly
-		orb_copy(ORB_ID(sensor_baro), _baro_sub, &_baro);
+		orb_copy(ORB_ID(sensor_baro_raw), _baro_sub, &_baro);
 
 		initReferencePosition(_gps.timestamp, _gpsIsGood, lat, lon, gps_alt, _baro.altitude);
 
@@ -546,7 +546,7 @@ void AttitudePositionEstimatorEKF::task_main()
 	 * do subscriptions
 	 */
 	_distance_sub = orb_subscribe(ORB_ID(distance_sensor));
-	_baro_sub = orb_subscribe_multi(ORB_ID(sensor_baro), 0);
+	_baro_sub = orb_subscribe_multi(ORB_ID(sensor_baro_raw), 0);
 	_airspeed_sub = orb_subscribe(ORB_ID(airspeed));
 	_gps_sub = orb_subscribe(ORB_ID(vehicle_gps_position));
 	_vehicle_status_sub = orb_subscribe(ORB_ID(vehicle_status));
@@ -799,7 +799,7 @@ void AttitudePositionEstimatorEKF::initializeGPS()
 	float gps_alt = _gps.alt / 1e3f;
 
 	// Set up height correctly
-	orb_copy(ORB_ID(sensor_baro), _baro_sub, &_baro);
+	orb_copy(ORB_ID(sensor_baro_raw), _baro_sub, &_baro);
 
 	_ekf->baroHgt = _baro.altitude;
 	_ekf->hgtMea = _ekf->baroHgt;
@@ -1682,7 +1682,7 @@ void AttitudePositionEstimatorEKF::pollData()
 	if (_newHgtData) {
 		static hrt_abstime baro_last = 0;
 
-		orb_copy(ORB_ID(sensor_baro), _baro_sub, &_baro);
+		orb_copy(ORB_ID(sensor_baro_raw), _baro_sub, &_baro);
 
 		// init lowpass filters for baro and gps altitude
 		float baro_elapsed;

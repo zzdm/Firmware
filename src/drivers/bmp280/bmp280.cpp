@@ -267,7 +267,7 @@ BMP280::init()
 
 	_reports->get(&brp);
 
-	_baro_topic = orb_advertise_multi(ORB_ID(sensor_baro), &brp,
+	_baro_topic = orb_advertise_multi(ORB_ID(sensor_baro_raw), &brp,
 					  &_orb_class_instance, _interface->is_external() ? ORB_PRIO_HIGH : ORB_PRIO_DEFAULT);
 
 	if (_baro_topic == nullptr) {
@@ -568,7 +568,7 @@ BMP280::collect()
 	/* publish it */
 	if (!(_pub_blocked)) {
 		/* publish it */
-		orb_publish(ORB_ID(sensor_baro), _baro_topic, &report);
+		orb_publish(ORB_ID(sensor_baro_raw), _baro_topic, &report);
 	}
 
 	if (_reports->force(&report)) {

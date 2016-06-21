@@ -86,7 +86,7 @@ set(msg_file_names
 	safety.msg
 	satellite_info.msg
 	sensor_accel_raw.msg
-	sensor_baro.msg
+	sensor_baro_raw.msg
 	sensor_combined.msg
 	sensor_gyro_raw.msg
 	sensor_mag_raw.msg

@@ -274,7 +274,7 @@ MS5611::init()
 	}
 
 	/* allocate basic report buffers */
-	_reports = new ringbuffer::RingBuffer(2, sizeof(sensor_baro_s));
+	_reports = new ringbuffer::RingBuffer(2, sizeof(sensor_baro_raw_s));
 
 	if (_reports == nullptr) {
 		DEVICE_DEBUG("can't get memory for reports");
@@ -323,12 +323,12 @@ MS5611::init()
 
 		ret = OK;
 
-		_baro_topic = orb_advertise_multi(ORB_ID(sensor_baro), &brp,
+		_baro_topic = orb_advertise_multi(ORB_ID(sensor_baro_raw), &brp,
 						  &_orb_class_instance, (is_external()) ? ORB_PRIO_HIGH : ORB_PRIO_DEFAULT);
 
 
 		if (_baro_topic == nullptr) {
-			warnx("failed to create sensor_baro publication");
+			warnx("failed to create sensor_baro_raw publication");
 		}
 
 	} while (0);
@@ -765,7 +765,7 @@ MS5611::collect()
 		/* publish it */
 		if (!(_pub_blocked)) {
 			/* publish it */
-			orb_publish(ORB_ID(sensor_baro), _baro_topic, &report);
+			orb_publish(ORB_ID(sensor_baro_raw), _baro_topic, &report);
 		}
 
 		if (_reports->force(&report)) {

@@ -1126,7 +1126,7 @@ Sensors::baro_poll(struct sensor_combined_s &raw)
 
 		if (baro_updated) {
 
-			orb_copy(ORB_ID(sensor_baro), _baro_sub[i], &_barometer);
+			orb_copy(ORB_ID(sensor_baro_raw), _baro_sub[i], &_barometer);
 
 			raw.baro_pres_mbar[i] = _barometer.pressure; // Pressure in mbar
 			raw.baro_alt_meter[i] = _barometer.altitude; // Altitude in meters
@@ -2110,7 +2110,7 @@ Sensors::task_main()
 	_accel_count = init_sensor_class(ORB_ID(sensor_accel_raw), _accel_sub, raw.accelerometer_priority,
 					 raw.accelerometer_errcount);
 
-	_baro_count = init_sensor_class(ORB_ID(sensor_baro), _baro_sub, raw.baro_priority, raw.baro_errcount);
+	_baro_count = init_sensor_class(ORB_ID(sensor_baro_raw), _baro_sub, raw.baro_priority, raw.baro_errcount);
 
 	if (gcount_prev != _gyro_count ||
 	    mcount_prev != _mag_count ||
@@ -2241,7 +2241,7 @@ Sensors::task_main()
 			_accel_count = init_sensor_class(ORB_ID(sensor_accel_raw), _accel_sub,
 							 raw.accelerometer_priority, raw.accelerometer_errcount);
 
-			_baro_count = init_sensor_class(ORB_ID(sensor_baro), _baro_sub,
+			_baro_count = init_sensor_class(ORB_ID(sensor_baro_raw), _baro_sub,
 							raw.baro_priority, raw.baro_errcount);
 
 			_last_config_update = hrt_absolute_time();

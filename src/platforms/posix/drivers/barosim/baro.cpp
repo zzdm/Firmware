@@ -256,11 +256,11 @@ BAROSIM::init()
 
 	_reports->flush();
 
-	_baro_topic = orb_advertise_multi(ORB_ID(sensor_baro), &brp,
+	_baro_topic = orb_advertise_multi(ORB_ID(sensor_baro_raw), &brp,
 					  &_orb_class_instance, (is_external()) ? ORB_PRIO_HIGH : ORB_PRIO_DEFAULT);
 
 	if (_baro_topic == nullptr) {
-		PX4_ERR("failed to create sensor_baro publication");
+		PX4_ERR("failed to create sensor_baro_raw publication");
 	}
 
 	/* this do..while is goto without goto */
@@ -299,8 +299,6 @@ BAROSIM::init()
 		_reports->get(&brp);
 
 		ret = OK;
-
-		//PX4_WARN("sensor_baro publication %ld", _baro_topic);
 
 	} while (0);
 
@@ -685,7 +683,7 @@ BAROSIM::collect()
 		if (!(m_pub_blocked)) {
 			if (_baro_topic != nullptr) {
 				/* publish it */
-				orb_publish(ORB_ID(sensor_baro), _baro_topic, &report);
+				orb_publish(ORB_ID(sensor_baro_raw), _baro_topic, &report);
 
 			} else {
 				PX4_WARN("BAROSIM::collect _baro_topic not initialized");

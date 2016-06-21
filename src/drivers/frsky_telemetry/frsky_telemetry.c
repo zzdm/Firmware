@@ -57,7 +57,7 @@
 #include <systemlib/systemlib.h>
 #include <termios.h>
 #include <drivers/drv_hrt.h>
-#include <uORB/topics/sensor_baro.h>
+#include <uORB/topics/sensor_baro_raw.h>
 
 #include "sPort_data.h"
 #include "frsky_data.h"
@@ -275,14 +275,14 @@ static int frsky_telemetry_thread_main(int argc, char *argv[])
 
 		PX4_INFO("sending FrSky SmartPort telemetry");
 
-		struct sensor_baro_s *sensor_baro = malloc(sizeof(struct sensor_baro_s));
+		struct sensor_baro_raw_s *sensor_baro = malloc(sizeof(struct sensor_baro_raw_s));
 
 		if (sensor_baro == NULL) {
 			err(1, "could not allocate memory");
 		}
 
 		static float filtered_alt = NAN;
-		int sensor_sub = orb_subscribe(ORB_ID(sensor_baro));
+		int sensor_sub = orb_subscribe(ORB_ID(sensor_baro_raw));
 
 		/* send S.port telemetry */
 		while (!thread_should_exit) {
@@ -318,7 +318,7 @@ static int frsky_telemetry_thread_main(int argc, char *argv[])
 			orb_check(sensor_sub, &sensor_updated);
 
 			if (sensor_updated) {
-				orb_copy(ORB_ID(sensor_baro), sensor_sub, sensor_baro);
+				orb_copy(ORB_ID(sensor_baro_raw), sensor_sub, sensor_baro);
 
 				if (isnan(filtered_alt)) {
 					filtered_alt = sensor_baro->altitude;

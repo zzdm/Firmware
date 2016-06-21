@@ -50,8 +50,8 @@
 #define BARO_BASE_DEVICE_PATH	"/dev/baro"
 #define BARO0_DEVICE_PATH	"/dev/baro0"
 
-#include <uORB/topics/sensor_baro.h>
-#define baro_report sensor_baro_s
+#include <uORB/topics/sensor_baro_raw.h>
+#define baro_report sensor_baro_raw_s
 
 /*
  * ioctl() definitions

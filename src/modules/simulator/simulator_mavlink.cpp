@@ -838,7 +838,7 @@ int Simulator::publish_sensor_topics(mavlink_hil_sensor_t *imu)
 		baro.temperature = imu->temperature;
 
 		int baro_multi;
-		orb_publish_auto(ORB_ID(sensor_baro), &_baro_pub, &baro, &baro_multi, ORB_PRIO_HIGH);
+		orb_publish_auto(ORB_ID(sensor_baro_raw), &_baro_pub, &baro, &baro_multi, ORB_PRIO_HIGH);
 	}
 
 	return OK;
