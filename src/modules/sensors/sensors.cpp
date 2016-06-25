@@ -1068,7 +1068,7 @@ Sensors::accel_poll(struct sensor_combined_s &raw)
 				_last_sensor_data[i].accelerometer_integral_m_s[1] = vect_int(1);
 				_last_sensor_data[i].accelerometer_integral_m_s[2] = vect_int(2);
 
-				_last_sensor_data[i].accelerometer_integral_dt = accel_report.integral_dt;
+				_last_sensor_data[i].accelerometer_integral_dt = (uint32_t)accel_report.integral_dt;
 
 				float dt = accel_report.integral_dt / 1.e6f;
 				sensor_value = vect_int / dt;
@@ -1085,7 +1085,7 @@ Sensors::accel_poll(struct sensor_combined_s &raw)
 				}
 
 				_last_sensor_data[i].accelerometer_integral_dt =
-					accel_report.timestamp - _last_sensor_data[i].accelerometer_timestamp;
+					(uint32_t)(accel_report.timestamp - _last_sensor_data[i].accelerometer_timestamp);
 				float dt = _last_sensor_data[i].accelerometer_integral_dt / 1.e6f;
 				_last_sensor_data[i].accelerometer_integral_m_s[0] = vect_val(0) * dt;
 				_last_sensor_data[i].accelerometer_integral_m_s[1] = vect_val(1) * dt;
@@ -1141,7 +1141,7 @@ Sensors::gyro_poll(struct sensor_combined_s &raw)
 				_last_sensor_data[i].gyro_integral_rad[1] = vect_int(1);
 				_last_sensor_data[i].gyro_integral_rad[2] = vect_int(2);
 
-				_last_sensor_data[i].gyro_integral_dt = gyro_report.integral_dt;
+				_last_sensor_data[i].gyro_integral_dt = (uint32_t)gyro_report.integral_dt;
 
 				float dt = gyro_report.integral_dt / 1.e6f;
 				sensor_value = vect_int / dt;
@@ -1158,7 +1158,7 @@ Sensors::gyro_poll(struct sensor_combined_s &raw)
 				}
 
 				_last_sensor_data[i].gyro_integral_dt =
-					gyro_report.timestamp - _last_sensor_data[i].timestamp;
+					(uint32_t)(gyro_report.timestamp - _last_sensor_data[i].timestamp);
 				float dt = _last_sensor_data[i].gyro_integral_dt / 1.e6f;
 				_last_sensor_data[i].gyro_integral_rad[0] = vect_val(0) * dt;
 				_last_sensor_data[i].gyro_integral_rad[1] = vect_val(1) * dt;
