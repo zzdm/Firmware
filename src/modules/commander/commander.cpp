@@ -1108,7 +1108,7 @@ static void commander_set_home_position(orb_advert_t &homePub, home_position_s &
 	}
 
 	//Set home position
-	home.timestamp = hrt_absolute_time();
+	home.timestamp = globalPosition.timestamp;
 	home.lat = globalPosition.lat;
 	home.lon = globalPosition.lon;
 	home.alt = globalPosition.alt;
@@ -1118,6 +1118,13 @@ static void commander_set_home_position(orb_advert_t &homePub, home_position_s &
 	home.z = localPosition.z;
 
 	home.yaw = attitude.yaw;
+
+	/* Initialize map projection if gps is valid */
+	if (!map_projection_global_initialized()) {
+		/* set reference for global coordinates <--> local coordiantes conversion and map_projection */
+		globallocalconverter_init(globalPosition.lat, globalPosition.lon,
+					  globalPosition.alt, globalPosition.timestamp);
+	}
 
 	PX4_INFO("home: %.7f, %.7f, %.2f", home.lat, home.lon, (double)home.alt);
 
@@ -2161,16 +2168,6 @@ int commander_thread_main(int argc, char *argv[])
 			orb_copy(ORB_ID(vehicle_gps_position), gps_sub, &gps_position);
 		}
 
-		/* Initialize map projection if gps is valid */
-		if (!map_projection_global_initialized()
-		    && (gps_position.eph < eph_threshold)
-		    && (gps_position.epv < epv_threshold)
-		    && hrt_elapsed_time((hrt_abstime *)&gps_position.timestamp) < 1e6) {
-			/* set reference for global coordinates <--> local coordiantes conversion and map_projection */
-			globallocalconverter_init((double)gps_position.lat * 1.0e-7, (double)gps_position.lon * 1.0e-7,
-						  (float)gps_position.alt * 1.0e-3f, hrt_absolute_time());
-		}
-
 		/* check if GPS is ok */
 		if (!status_flags.circuit_breaker_engaged_gpsfailure_check) {
 			bool gpsIsNoisy = gps_position.noise_per_ms > 0 && gps_position.noise_per_ms < COMMANDER_MAX_GPS_NOISE;
@@ -2192,7 +2189,9 @@ int commander_thread_main(int argc, char *argv[])
 				if (status_flags.gps_failure && !gpsIsNoisy) {
 					status_flags.gps_failure = false;
 					status_changed = true;
-					mavlink_log_critical(&mavlink_log_pub, "GPS fix regained");
+					if (status_flags.condition_home_position_valid) {
+						mavlink_log_critical(&mavlink_log_pub, "GPS fix regained");
+					}
 				}
 
 			} else if (!status_flags.gps_failure) {
