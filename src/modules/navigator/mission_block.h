@@ -64,6 +64,9 @@ public:
 	 */
 	MissionBlock(Navigator *navigator, const char *name);
 
+	MissionBlock(const MissionBlock &) = delete;
+	MissionBlock &operator=(const MissionBlock &) = delete;
+
 	/**
 	 * Destructor
 	 */
@@ -104,7 +107,7 @@ protected:
 	/**
 	 * Set a takeoff mission item
 	 */
-	void set_takeoff_item(struct mission_item_s *item, float min_clearance = -1.0f, float min_pitch = 0.0f);
+	void set_takeoff_item(struct mission_item_s *item, float abs_altitude, float min_pitch = 0.0f);
 
 	/**
 	 * Set a land mission item
@@ -141,6 +144,7 @@ protected:
 	orb_advert_t    _actuator_pub;
 	orb_advert_t	_cmd_pub;
 
+	control::BlockParamFloat _param_loiter_min_alt;
 	control::BlockParamFloat _param_yaw_timeout;
 	control::BlockParamFloat _param_yaw_err;
 	control::BlockParamInt _param_vtol_wv_land;

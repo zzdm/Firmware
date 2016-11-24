@@ -87,7 +87,7 @@ bool MissionFeasibilityChecker::checkMissionFeasible(orb_advert_t *mavlink_log_p
 
 	// check if all mission item commands are supported
 	failed = failed || !checkMissionItemValidity(dm_current, nMissionItems, condition_landed);
-	failed = failed || !checkGeofence(dm_current, nMissionItems, geofence);
+	failed = failed || !checkGeofence(dm_current, nMissionItems, geofence, home_alt);
 	failed = failed || !checkHomePositionAltitude(dm_current, nMissionItems, home_alt, home_valid, warned);
 
 	if (isRotarywing) {
@@ -149,7 +149,7 @@ bool MissionFeasibilityChecker::checkMissionFeasibleFixedwing(dm_item_t dm_curre
 	return resLanding;
 }
 
-bool MissionFeasibilityChecker::checkGeofence(dm_item_t dm_current, size_t nMissionItems, Geofence &geofence)
+bool MissionFeasibilityChecker::checkGeofence(dm_item_t dm_current, size_t nMissionItems, Geofence &geofence, float home_alt)
 {
 	/* Check if all mission items are inside the geofence (if we have a valid geofence) */
 	if (geofence.valid()) {
@@ -162,10 +162,15 @@ bool MissionFeasibilityChecker::checkGeofence(dm_item_t dm_current, size_t nMiss
 				return false;
 			}
 
-			if (MissionBlock::item_contains_position(&missionitem) &&
-				!geofence.inside_polygon(missionitem.lat, missionitem.lon, missionitem.altitude)) {
+			// Geofence function checks against home altitude amsl
+			missionitem.altitude = missionitem.altitude_is_relative
+				      ? missionitem.altitude + home_alt
+			              : missionitem.altitude;
 
-				mavlink_log_critical(_mavlink_log_pub, "Geofence violation for waypoint %d", i);
+			if (MissionBlock::item_contains_position(&missionitem) &&
+				!geofence.inside(missionitem)) {
+
+				mavlink_log_critical(_mavlink_log_pub, "Geofence violation for waypoint %d", i + 1);
 				return false;
 			}
 		}
@@ -177,7 +182,7 @@ bool MissionFeasibilityChecker::checkGeofence(dm_item_t dm_current, size_t nMiss
 bool MissionFeasibilityChecker::checkHomePositionAltitude(dm_item_t dm_current, size_t nMissionItems,
 	float home_alt, bool home_valid, bool &warning_issued, bool throw_error)
 {
-	/* Check if all all waypoints are above the home altitude, only return false if bool throw_error = true */
+	/* Check if all waypoints are above the home altitude, only return false if bool throw_error = true */
 	for (size_t i = 0; i < nMissionItems; i++) {
 		struct mission_item_s missionitem;
 		const ssize_t len = sizeof(struct mission_item_s);
@@ -238,17 +243,25 @@ bool MissionFeasibilityChecker::checkMissionItemValidity(dm_item_t dm_current, s
 		if (missionitem.nav_cmd != NAV_CMD_IDLE &&
 			missionitem.nav_cmd != NAV_CMD_WAYPOINT &&
 			missionitem.nav_cmd != NAV_CMD_LOITER_UNLIMITED &&
-			/* not yet supported: missionitem.nav_cmd != NAV_CMD_LOITER_TURN_COUNT && */
 			missionitem.nav_cmd != NAV_CMD_LOITER_TIME_LIMIT &&
 			missionitem.nav_cmd != NAV_CMD_LAND &&
 			missionitem.nav_cmd != NAV_CMD_TAKEOFF &&
-			missionitem.nav_cmd != NAV_CMD_VTOL_LAND &&
+			missionitem.nav_cmd != NAV_CMD_LOITER_TO_ALT &&
 			missionitem.nav_cmd != NAV_CMD_VTOL_TAKEOFF &&
-			missionitem.nav_cmd != NAV_CMD_PATHPLANNING &&
+			missionitem.nav_cmd != NAV_CMD_VTOL_LAND &&
 			missionitem.nav_cmd != NAV_CMD_DO_JUMP &&
-			missionitem.nav_cmd != NAV_CMD_DO_SET_SERVO &&
 			missionitem.nav_cmd != NAV_CMD_DO_CHANGE_SPEED &&
+			missionitem.nav_cmd != NAV_CMD_DO_SET_SERVO &&
+			missionitem.nav_cmd != NAV_CMD_DO_LAND_START &&
 			missionitem.nav_cmd != NAV_CMD_DO_DIGICAM_CONTROL &&
+			missionitem.nav_cmd != NAV_CMD_IMAGE_START_CAPTURE &&
+			missionitem.nav_cmd != NAV_CMD_IMAGE_STOP_CAPTURE &&
+			missionitem.nav_cmd != NAV_CMD_VIDEO_START_CAPTURE &&
+			missionitem.nav_cmd != NAV_CMD_VIDEO_STOP_CAPTURE &&
+			missionitem.nav_cmd != NAV_CMD_DO_MOUNT_CONFIGURE &&
+			missionitem.nav_cmd != NAV_CMD_DO_MOUNT_CONTROL &&
+			missionitem.nav_cmd != NAV_CMD_DO_SET_ROI &&
+			missionitem.nav_cmd != NAV_CMD_ROI &&
 			missionitem.nav_cmd != NAV_CMD_DO_SET_CAM_TRIGG_DIST &&
 			missionitem.nav_cmd != NAV_CMD_DO_VTOL_TRANSITION) {
 
@@ -323,11 +336,11 @@ bool MissionFeasibilityChecker::checkFixedWingLanding(dm_item_t dm_current, size
 				} else {
 					/* Last wp is in flare region */
 					//xxx give recommendations
-					mavlink_log_critical(_mavlink_log_pub, "Warning: Landing: last waypoint in flare region");
+					mavlink_log_critical(_mavlink_log_pub, "Last waypoint too close to landing waypoint");
 					return false;
 				}
 			} else {
-				mavlink_log_critical(_mavlink_log_pub, "Warning: starting with land waypoint");
+				mavlink_log_critical(_mavlink_log_pub, "Invalid mission: starts with land waypoint");
 				return false;
 			}
 		}
@@ -407,13 +420,15 @@ MissionFeasibilityChecker::check_dist_1wp(dm_item_t dm_current, size_t nMissionI
 
 bool
 MissionFeasibilityChecker::isPositionCommand(unsigned cmd){
-	if( cmd == NAV_CMD_WAYPOINT ||
-		cmd == NAV_CMD_LOITER_TIME_LIMIT ||
-		cmd == NAV_CMD_LOITER_TURN_COUNT ||
+	if (cmd == NAV_CMD_WAYPOINT ||
 		cmd == NAV_CMD_LOITER_UNLIMITED ||
-		cmd == NAV_CMD_TAKEOFF ||
+		cmd == NAV_CMD_LOITER_TIME_LIMIT ||
 		cmd == NAV_CMD_LAND ||
-		cmd == NAV_CMD_PATHPLANNING) {
+		cmd == NAV_CMD_TAKEOFF ||
+		cmd == NAV_CMD_LOITER_TO_ALT ||
+		cmd == NAV_CMD_VTOL_TAKEOFF ||
+		cmd == NAV_CMD_VTOL_LAND) {
+
 		return true;
 	} else {
 		return false;

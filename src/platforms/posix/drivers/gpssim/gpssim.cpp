@@ -37,7 +37,7 @@
  */
 
 #include <sys/types.h>
-#define __STDC_FORMAT_MACROS
+#include <px4_defines.h>
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -72,12 +72,6 @@ using namespace DriverFramework;
 
 #define TIMEOUT_5HZ 500
 #define RATE_MEASUREMENT_PERIOD 5000000
-
-/* oddly, ERROR is not defined for c++ */
-#ifdef ERROR
-# undef ERROR
-#endif
-static const int ERROR = -1;
 
 /* class for dynamic allocation of satellite info data */
 class GPS_Sat_Info
@@ -221,7 +215,7 @@ GPSSIM::~GPSSIM()
 int
 GPSSIM::init()
 {
-	int ret = ERROR;
+	int ret = PX4_ERROR;
 
 	/* do regular cdev init */
 	if (VirtDevObj::init() != OK) {

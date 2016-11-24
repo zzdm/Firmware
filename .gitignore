@@ -5,6 +5,7 @@
 *.px4log
 *.dSYM
 *.o
+*.gch
 *.pyc
 *~
 .*.swp
@@ -64,7 +65,6 @@ CMakeLists.txt.user
 GPATH
 GRTAGS
 GTAGS
-*.config
 *.creator
 *.creator.user
 *.files
@@ -73,3 +73,7 @@ GTAGS
 # uavcan firmware
 ROMFS/px4fmu_common/uavcan/
 vectorcontrol/
+
+
+# CLion ignores
+.idea
